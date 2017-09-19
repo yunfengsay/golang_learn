@@ -17,25 +17,33 @@ import (
 type Watch struct {
 	watch *fsnotify.Watcher
 }
+type ignore struct {
+	string
+}
+
 type Conf struct {
-	User string `json:user`
+	User   string   `json:user`
+	Pwd    string   `json:pwd`
+	Ignore []ignore `json:ignore`
 }
 
 const (
 	confFilePath = "./conf.json"
 )
 
-func getConf(path string) {
-	data, err := ioutil.ReadFile(path)
+func checkErr(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func getConf(path string) {
+	data, err := ioutil.ReadFile("./conf.json")
+	checkErr(err)
 	var c Conf
 	//解析配置文件
 	err = json.Unmarshal(data, &c)
-	if err != nil {
-		log.Fatal(err)
-	}
+	checkErr(err)
 }
 
 var localPath = os.Args[1]
@@ -135,10 +143,11 @@ func scpUpload(evName string, localPath string) {
 }
 
 func main() {
-	watch, _ := fsnotify.NewWatcher()
-	w := Watch{
-		watch: watch,
-	}
-	w.watchDir(localFilePath)
-	select {}
+	getConf(confFilePath)
+	//watch, _ := fsnotify.NewWatcher()
+	//w := Watch{
+	//	watch: watch,
+	//}
+	//w.watchDir(localFilePath)
+	//select {}
 }
