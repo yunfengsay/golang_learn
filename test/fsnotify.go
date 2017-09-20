@@ -17,14 +17,12 @@ import (
 type Watch struct {
 	watch *fsnotify.Watcher
 }
-type ignore struct {
-	string
-}
+
 
 type Conf struct {
 	User   string   `json:user`
 	Pwd    string   `json:pwd`
-	Ignore []ignore `json:ignore`
+	Ignore interface{} `json:ignore`
 }
 
 const (
@@ -37,13 +35,13 @@ func checkErr(err error) {
 	}
 }
 
-func getConf(path string) {
-	data, err := ioutil.ReadFile("./conf.json")
+func getConf(path string) (c Conf){
+	data, err := ioutil.ReadFile("/Users/zhangyunfeng/code/learn/go/test/conf.json")
 	checkErr(err)
-	var c Conf
 	//解析配置文件
 	err = json.Unmarshal(data, &c)
 	checkErr(err)
+	return
 }
 
 var localPath = os.Args[1]
@@ -143,7 +141,8 @@ func scpUpload(evName string, localPath string) {
 }
 
 func main() {
-	getConf(confFilePath)
+	conf := getConf(confFilePath)
+	fmt.Println(conf)
 	//watch, _ := fsnotify.NewWatcher()
 	//w := Watch{
 	//	watch: watch,
