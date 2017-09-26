@@ -10,11 +10,9 @@ type Login struct {
 	name string `json:name`
 }
 
-func main() {
+func initRouter() *gin.Engine {
 	router := gin.Default()
-	router.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "hello")
-	})
+
 	router.GET("/login", func(c *gin.Context) {
 		// c.JSON(200, Login{"yunfeng"})
 		c.JSON(http.StatusOK, gin.H{
@@ -25,5 +23,24 @@ func main() {
 			},
 		})
 	})
+	router.GET("/", func(c *gin.Context) {
+		c.String(http.StatusOK, "hello")
+	})
+	// router.POST("/person", AddPersonApi)
+
+	// router.GET("/persons", GetPersonsApi)
+
+	// router.GET("/person/:id", GetPersonApi)
+
+	// router.PUT("/person/:id", ModPersonApi)
+
+	// router.DELETE("/person/:id", DelPersonApi)
+
+	return router
+}
+
+func main() {
+	router := gin.Default()
+	initRouter()
 	router.Run(":9003")
 }
